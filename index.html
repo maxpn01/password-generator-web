@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script defer src="script.js"></script>
+</head>
+<body>
+
+    <p id="message">Copied to clipboard!</p>
+
+    <div class="container">
+        <div class="result-section">
+            <input type="text" id="result" disabled>
+            <button id="clipboard-btn">
+                <i class="ri-clipboard-line"></i>
+            </button>
+        </div>
+
+        <div class="char-length">
+            <label for="slider" class="length-label">
+                Character Length
+                <input type="number" id="length" min="1" max="125">
+            </label> 
+        </div>
+
+        <div class="options">
+            <label for="uppercase" class="checkbox-label">
+                <input type="checkbox" class="checkbox" id="uppercase">
+                Include Uppercase Letters
+            </label>
+            <label for="lowercase" class="checkbox-label">
+                <input type="checkbox" class="checkbox" id="lowercase">
+                Include Lowercase Letters
+            </label>
+            <label for="numbers" class="checkbox-label">
+                <input type="checkbox" class="checkbox" id="numbers">
+                Include Numbers
+            </label>
+            <label for="symbols" class="checkbox-label">
+                <input type="checkbox" class="checkbox" id="symbols">
+                Include Symbols
+            </label>
+        </div>
+
+        <div class="strength">
+            <h2 class="strength__title">STRENGTH</h2>
+            <div class="strength-lvl">
+                <p id="lvl-text"></p>
+                <div class="bars orange" id="bar1"></div>
+                <div class="bars" id="bar2"></div>
+                <div class="bars" id="bar3"></div>
+                <div class="bars" id="bar4"></div>
+            </div>
+        </div>
+
+        <button id="generate-btn">GENERATE <i class="ri-arrow-right-line"></i></button>
+    </div>
+
+</body>
+</html>
