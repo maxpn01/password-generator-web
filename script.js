@@ -10,73 +10,106 @@ const generateBtn = d.getElementById('generate-btn');
 const clipboardBtn = d.getElementById('clipboard-btn');
 const message = d.getElementById('message');
 
-const bars = Array.from({ length: 4 }, (_, i) => d.getElementById(`bar${i + 1}`));
+const bar1 = d.getElementById("bar1");
+const bar2 = d.getElementById("bar2");
+const bar3 = d.getElementById("bar3");
+const bar4 = d.getElementById("bar4");
 
-const types = { lower: lowercaseEl, upper: uppercaseEl, 
-    number: numbersEl, symbol: symbolsEl };
-
-const randomFunc = { lower: () => getRandomChar(97, 26), upper: () => getRandomChar(65, 26), 
-    number: () => getRandomChar(48, 10), symbol: getRandomSymbol };
+const randomFunc = {
+    lower: getRandomLower,
+    upper: getRandomUpper,
+    number: getRandomNumber,
+    symbol: getRandomSymbol
+}
 
 clipboardBtn.addEventListener('click', () => {
     if (resultEl.value) {
         navigator.clipboard.writeText(resultEl.value);
-        showMessage();
+        
+        message.style.visibility = "visible";
+        setTimeout(() => { 
+            message.style.visibility = "hidden";
+        }, 3000);
     }
+
+    
 })
 
-function showMessage() {
-    message.style.visibility = 'visible';
-    setTimeout(() => { message.style.visibility = 'hidden'; }, 3000);
-}
-
-generateBtn.addEventListener('click', generatePassword);
-lengthEl.oninput = updatePasswordStrength;
-
-function generatePassword() {
+generateBtn.addEventListener('click', () => {
     const length = +lengthEl.value;
-    const selectedTypes = Object.entries(types).filter(([key, checkbox]) => checkbox.checked);
+    const hasLower = lowercaseEl.checked;
+    const hasUpper = uppercaseEl.checked;
+    const hasNumber = numbersEl.checked;
+    const hasSymbol = symbolsEl.checked;
 
-    if (selectedTypes.length === 0) {
-        resultEl.value = '';
-        return;
+    resultEl.value = generatePassword(hasLower, hasUpper, hasNumber, hasSymbol, length);
+})
+
+function generatePassword(lower, upper, number, symbol, length) {
+    let generatedPassword = "";
+    const typesCount = lower + upper + number + symbol;
+    const typesArr = [{lower}, {upper}, {number}, {symbol}].filter(item => Object.values(item)[0])
+    
+    if(typesCount === 0) return "";
+
+    for(let i = 0; i < length; i += typesCount) {
+        typesArr.forEach(type => {
+            const funcName = Object.keys(type)[0]
+            generatedPassword += randomFunc[funcName]()
+        })
     }
 
-    resultEl.value = Array.from({ length }, () => {
-        const [type,] = selectedTypes[Math.floor(Math.random() * selectedTypes.length)];
-        return randomFunc[type]();
-    }).join('');
-
-    updatePasswordStrength(); 
+    return generatedPassword;
 }
 
-function updatePasswordStrength() {
-    const lengthValue = lengthEl.value;
-
-    if (!resultEl.value) return modifyBars("");
-    
-    const level = lengthValue < 10 ? "WEAK" : 
-                 lengthValue < 15 ? "MEDIUM" : 
-                 lengthValue < 20 ? "GOOD" : "STRONG";
-                 
-    modifyBars(level);
+function getRandomLower() {
+    return String.fromCharCode(Math.floor(Math.random() * 26) + 97)
 }
 
-function modifyBars(level) {
-    const levels = { "WEAK": 1, "MEDIUM": 2, "GOOD": 3, "STRONG": 4 };
-    levelTxt.innerHTML = level;
-
-    bars.forEach((bar, index) => {
-        bar.classList.remove('weak', 'medium', 'good', 'strong');
-        if (index < levels[level]) bar.classList.add(level.toLowerCase());
-    });
+function getRandomUpper() {
+    return String.fromCharCode(Math.floor(Math.random() * 26) + 65)
 }
 
-function getRandomChar(start, range) {
-    return String.fromCharCode(Math.floor(Math.random() * range) + start);
+function getRandomNumber() {
+    return String.fromCharCode(Math.floor(Math.random() * 10) + 48)
 }
 
 function getRandomSymbol() {
-    const symbols = '!@#$%^&*(){}[]=<>/,.';
-    return symbols[Math.floor(Math.random() * symbols.length)];
+    const symbols = '!@#$%^&*(){}[]=<>/,.'
+    return symbols[Math.floor(Math.random() * symbols.length)]
+}
+
+lengthEl.oninput = () => {
+    const lengthValue = lengthEl.value;
+
+    if (!resultEl.value) modifyBars("");
+    if (lengthValue < 10) modifyBars("WEAK");
+    if (lengthValue >= 10 && lengthValue < 15) modifyBars("MEDIUM");
+    if (lengthValue >= 15 && lengthValue < 20) modifyBars("GOOD");
+    if (lengthValue >= 20) modifyBars("STRONG");
+};
+
+function modifyBars(level) {
+    levelTxt.innerHTML = level;
+
+    bar1.classList.remove("weak", "medium", "good", "strong");
+    bar2.classList.remove("weak", "medium", "good", "strong");
+    bar3.classList.remove("weak", "medium", "good", "strong");
+    bar4.classList.remove("weak", "medium", "good", "strong");
+
+    if (level === "WEAK") {
+        bar1.classList.add("weak");
+    } else if (level === "MEDIUM") {
+        bar1.classList.add("medium");
+        bar2.classList.add("medium");
+    } else if (level === "GOOD") {
+        bar1.classList.add("good");
+        bar2.classList.add("good");
+        bar3.classList.add("good");
+    } else if (level === "STRONG") {
+        bar1.classList.add("strong");
+        bar2.classList.add("strong");
+        bar3.classList.add("strong");
+        bar4.classList.add("strong");
+    }
 }
